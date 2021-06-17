@@ -5,24 +5,18 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.math.BigDecimal;
 import java.time.LocalDate;
-
 
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class Customer {
-
-    private Long customerNo;
+public class CustomerDto {
 
     private String name;
 
     private String surname;
 
     private LocalDate birthDate;
-
-    private BigDecimal balance = BigDecimal.ZERO;
 
 }

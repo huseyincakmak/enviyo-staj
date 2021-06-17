@@ -1,28 +1,21 @@
 package com.enviyo.staj.demo.customer;
 
+import com.fasterxml.jackson.annotation.JsonAnySetter;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.math.BigDecimal;
-import java.time.LocalDate;
-
 
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class Customer {
+public class BalanceResponseDto {
 
     private Long customerNo;
 
-    private String name;
-
-    private String surname;
-
-    private LocalDate birthDate;
-
-    private BigDecimal balance = BigDecimal.ZERO;
+    private BigDecimal balance;
 
 }

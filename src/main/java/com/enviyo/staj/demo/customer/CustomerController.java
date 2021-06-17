@@ -20,9 +20,9 @@ public class CustomerController {
     }
 
     @PostMapping
-    public void addCustomer(@RequestBody Customer customer) {
+    public void addCustomer(@RequestBody CustomerDto customerDto) {
 
-        customerService.addCustomer(customer);
+        customerService.addCustomer(customerDto);
     }
 
     @DeleteMapping("/{customerNo}")
