@@ -1,4 +1,4 @@
-package com.enviyo.staj.demo.customer;
+package com.enviyo.staj.demo.balance;
 
 import com.fasterxml.jackson.annotation.JsonAnySetter;
 import lombok.AllArgsConstructor;

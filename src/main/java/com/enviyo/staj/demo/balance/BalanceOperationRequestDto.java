@@ -1,4 +1,4 @@
-package com.enviyo.staj.demo.customer;
+package com.enviyo.staj.demo.balance;
 
 
 import lombok.AllArgsConstructor;
@@ -12,7 +12,7 @@ import java.math.BigDecimal;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class MoneyAddRequestDto {
+public class BalanceOperationRequestDto {
 
     private Long customerNo;
 
