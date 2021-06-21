@@ -93,7 +93,9 @@ public class CustomerService {
     private BalanceResponseDto getBalanceResponseDto(Customer customer) {
 
         final BalanceResponseDto balanceResponseDto = new BalanceResponseDto();
+
         balanceResponseDto.setCustomerNo(customer.getCustomerNo());
+
         balanceResponseDto.setBalance(customer.getBalance());
 
         return balanceResponseDto;
