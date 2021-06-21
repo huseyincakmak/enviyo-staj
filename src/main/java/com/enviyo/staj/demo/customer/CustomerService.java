@@ -2,6 +2,8 @@ package com.enviyo.staj.demo.customer;
 
 import com.enviyo.staj.demo.balance.BalanceResponseDto;
 import com.enviyo.staj.demo.balance.BalanceOperationRequestDto;
+import com.enviyo.staj.demo.exception.BadRequestException;
+import com.enviyo.staj.demo.exception.NotAcceptableException;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -45,6 +47,13 @@ public class CustomerService {
 
         final Long customerNo = balanceOperationRequestDto.getCustomerNo();
 
+        final BigDecimal amount = balanceOperationRequestDto.getAmount();
+
+        if(amount.compareTo(BigDecimal.ZERO) <= 0 ){
+
+            throw new NotAcceptableException("Geçersiz tutar");
+        }
+
         final Optional<Customer> customerOptional = findCustomer(customerNo);
 
         if (customerOptional.isPresent()) {
@@ -60,7 +69,7 @@ public class CustomerService {
     }
 
 
-    public BalanceResponseDto withdrawMoney(BalanceOperationRequestDto balanceOperationRequestDto) throws Exception {
+    public BalanceResponseDto withdrawMoney(BalanceOperationRequestDto balanceOperationRequestDto) {
 
         final Long customerNo = balanceOperationRequestDto.getCustomerNo();
 
@@ -72,7 +81,7 @@ public class CustomerService {
 
             if(customer.getBalance().compareTo(balanceOperationRequestDto.getAmount()) == -1){
 
-                 throw new Exception("Yeterli bakiyeniz bulunmamaktadır");
+                 throw new BadRequestException("Yeterli bakiyeniz bulunmamaktadır");
             }
 
             customer.setBalance(customer.getBalance().subtract(balanceOperationRequestDto.getAmount()));

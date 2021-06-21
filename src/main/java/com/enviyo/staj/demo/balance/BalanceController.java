@@ -2,6 +2,7 @@ package com.enviyo.staj.demo.balance;
 
 
 import com.enviyo.staj.demo.customer.CustomerService;
+import com.enviyo.staj.demo.exception.BadRequestException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -21,15 +22,9 @@ public class BalanceController {
     }
 
     @PostMapping("/remove")
-    public ResponseEntity<?> withdrawMoney(@RequestBody BalanceOperationRequestDto balanceOperationRequestDto) throws Exception {
+    public ResponseEntity<BalanceResponseDto> withdrawMoney(@RequestBody BalanceOperationRequestDto balanceOperationRequestDto) {
 
-        try{
-            return  new ResponseEntity<BalanceResponseDto>(customerService.withdrawMoney(balanceOperationRequestDto), HttpStatus.OK);
-        } catch (Exception e) {
-            String s =  e.getMessage();
-            return  new ResponseEntity<>(s , HttpStatus.BAD_REQUEST);
-        }
-
+        return  new ResponseEntity<BalanceResponseDto>(customerService.withdrawMoney(balanceOperationRequestDto), HttpStatus.OK);
     }
 
 }
