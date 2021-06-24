@@ -1,30 +1,28 @@
 package com.enviyo.staj.demo.customer;
 
-import com.enviyo.staj.demo.balance.BalanceResponseDto;
 import com.enviyo.staj.demo.balance.BalanceOperationRequestDto;
+import com.enviyo.staj.demo.balance.BalanceResponseDto;
 import com.enviyo.staj.demo.exception.BadRequestException;
 import com.enviyo.staj.demo.exception.NotAcceptableException;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
-import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.Random;
 
+@Slf4j
 @Service
 public class CustomerService {
 
-    private final static List<Customer> CUSTOMER_LIST = new ArrayList<>();
-
-    static {
-        CUSTOMER_LIST.add(new Customer(Long.parseLong("1"), "Ahmet", "Dursun", LocalDate.of(1976, 11, 6), BigDecimal.ZERO));
-    }
+    @Autowired
+    private CustomerRepository customerRepository;
 
     public List<Customer> getAllCustomers() {
 
-        return CUSTOMER_LIST;
+        return customerRepository.findAll();
     }
 
     public void addCustomer(CustomerDto customerDto) {
@@ -33,14 +31,12 @@ public class CustomerService {
         customerYeni.setCustomerNo(new Random().nextLong());
         customerYeni.setBalance(BigDecimal.ZERO);
 
-        CUSTOMER_LIST.add(customerYeni);
+        customerRepository.save(customerYeni);
     }
 
     public void deleteCustomer(Long customerNo) {
 
-        //customerNo değeri listedeki customerlardan herhangi birinin customerNosuna eşit ise siler.
-        //Predicate
-        CUSTOMER_LIST.removeIf(customer -> customerNo.equals(customer.getCustomerNo()));
+        customerRepository.deleteById(customerNo);
     }
 
     public BalanceResponseDto addMoney(BalanceOperationRequestDto balanceOperationRequestDto) {
@@ -51,6 +47,7 @@ public class CustomerService {
 
         if(amount.compareTo(BigDecimal.ZERO) <= 0 ){
 
+            log.error("Geçersiz tutar iletildi Tutar : {}, Customer: {}", amount, customerNo);
             throw new NotAcceptableException("Geçersiz tutar");
         }
 
@@ -61,6 +58,8 @@ public class CustomerService {
             final Customer customer = customerOptional.get();
 
             customer.setBalance(customer.getBalance().add(balanceOperationRequestDto.getAmount()));
+
+            customerRepository.save(customer);
 
             return getBalanceResponseDto(customer);
         }
@@ -79,12 +78,18 @@ public class CustomerService {
 
             final Customer customer = customerOptional.get();
 
-            if(customer.getBalance().compareTo(balanceOperationRequestDto.getAmount()) == -1){
+            final BigDecimal amount = balanceOperationRequestDto.getAmount();
+
+            if(customer.getBalance().compareTo(amount) == -1){
+
+                log.error("Yetersiz bakiye Tutar : {}, Customer: {}", amount, customerNo);
 
                  throw new BadRequestException("Yeterli bakiyeniz bulunmamaktadır");
             }
 
             customer.setBalance(customer.getBalance().subtract(balanceOperationRequestDto.getAmount()));
+
+            customerRepository.save(customer);
 
             return getBalanceResponseDto(customer);
         }
@@ -94,7 +99,7 @@ public class CustomerService {
 
     private Optional<Customer> findCustomer(Long customerNo) {
 
-        final Optional<Customer> customerOptional = CUSTOMER_LIST.stream().filter(cssda -> cssda.getCustomerNo().equals(customerNo)).findFirst();
+        final Optional<Customer> customerOptional = customerRepository.findById(customerNo);
 
         return customerOptional;
     }
@@ -109,6 +114,5 @@ public class CustomerService {
 
         return balanceResponseDto;
     }
-
 
 }
