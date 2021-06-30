@@ -1,5 +1,6 @@
-package com.enviyo.staj.demo.customer;
+package com.enviyo.staj.demo.food;
 
+import com.enviyo.staj.demo.models.MeasurementType;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -7,27 +8,25 @@ import lombok.Setter;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
-import java.time.LocalDate;
-
 
 @Getter
 @Setter
-@AllArgsConstructor
 @NoArgsConstructor
+@AllArgsConstructor
 @Entity
-@Table(name = "customer")
-public class Customer {
+@Table(name = "food")
+public class Food {
 
     @Id
     @GeneratedValue(strategy= GenerationType.IDENTITY)
-    private Long customerNo;
+    private Long id;
 
     private String name;
 
-    private String surname;
+    private BigDecimal calorie;
 
-    private LocalDate birthDate;
+    private MeasurementType measurementType;
 
-    private BigDecimal balance = BigDecimal.ZERO;
+    private BigDecimal amount;
 
 }

@@ -11,7 +11,6 @@ import org.springframework.stereotype.Service;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
-import java.util.Random;
 
 @Slf4j
 @Service
@@ -28,7 +27,6 @@ public class CustomerService {
     public void addCustomer(CustomerDto customerDto) {
 
         final Customer customerYeni = CustomerMapper.CUSTOMER_MAPPER.convertToCustomer(customerDto);
-        customerYeni.setCustomerNo(new Random().nextLong());
         customerYeni.setBalance(BigDecimal.ZERO);
 
         customerRepository.save(customerYeni);
@@ -97,7 +95,7 @@ public class CustomerService {
         return new BalanceResponseDto();
     }
 
-    private Optional<Customer> findCustomer(Long customerNo) {
+    public Optional<Customer> findCustomer(Long customerNo) {
 
         final Optional<Customer> customerOptional = customerRepository.findById(customerNo);
 
