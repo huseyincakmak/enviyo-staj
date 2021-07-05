@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Collection;
 import java.util.Optional;
 
 @Slf4j
@@ -25,5 +26,10 @@ public class FoodService {
     public Optional<Food> findFood(Long foodId) {
 
         return foodRepository.findById(foodId);
+    }
+
+    public Collection<Food> findAll() {
+
+        return foodRepository.findAll();
     }
 }

@@ -10,8 +10,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.security.KeyStore;
 import java.time.LocalDateTime;
-import java.util.Optional;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 @Slf4j
@@ -52,4 +54,58 @@ public class CustomerNutritionService {
         return customerNutritionAmount.divide(defaultAmount).multiply(defaultCalorie);
     }
 
+    public Collection<CustomerNutrition> findCustomerNutritions() {
+
+        return customerNutritionRepository.findAll();
+    }
+
+    public Collection<CustomerNutrition> findCustomerNutritionList(Long customerId) {
+
+        return customerNutritionRepository.findByCustomerId(customerId);
+    }
+
+    public Map<Object, Long> findCustomerNutritionSummary(Long customerId) {
+
+        Collection<CustomerNutrition> customerNutritions = customerNutritionRepository.findByCustomerId(customerId);
+
+        Map<Object, Long> objectLongMap  = customerNutritions.stream().collect(Collectors.groupingBy(t -> t.getFoodId(), Collectors.counting() ));
+
+        return objectLongMap;
+    }
+
+    public Map<Long, Long> findCustomerNutritionTotalCalorie(Long customerId) {
+
+        Collection<CustomerNutrition> customerNutritions = customerNutritionRepository.findByCustomerId(customerId);
+
+        Collection<Food> foodCollection = foodService.findAll();
+
+        Map<Long, Long> objectLongMap  = customerNutritions.stream().collect(Collectors.groupingBy(t -> t.getFoodId(), Collectors.counting() ));
+
+        Set<Map.Entry<Long, Long>> entrySet = objectLongMap.entrySet();
+
+        ArrayList<Map.Entry<Long, Long>> listOfEntry = new ArrayList<Map.Entry<Long, Long>>(entrySet);
+
+        Map<Long, Long> totalCalories = new HashMap<>();
+
+        /* Aşağıdaki forEach ile aynı işi yapan for döngüsü:
+        *
+            for(Map.Entry<Long, Long> entry : listOfEntry) {
+
+                Food food = foodCollection.stream().filter(t -> t.getId().equals(entry.getKey())).findFirst().get();
+
+                totalCalories.put(entry.getKey(), entry.getValue().longValue() * food.getCalorie().longValue());
+            }
+        *
+        */
+
+        listOfEntry.forEach(q -> {
+
+            Food food = foodCollection.stream().filter(t -> t.getId().equals(q.getKey())).findFirst().get();
+
+            totalCalories.put(q.getKey(), q.getValue().longValue() * food.getCalorie().longValue());
+
+        });
+
+        return totalCalories;
+    }
 }
